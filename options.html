@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Custom Actions</title>
+    <style>
+        textarea {
+            width: 100%;
+            height: 12em;
+        }
+
+        .del-action {
+            float: right;
+        }
+
+        .inp-url {
+            width: 90%;
+        }
+
+        .inp-name {
+            width: 50%;
+        }
+
+        div {
+            margin-bottom: 0.4em;
+        }
+
+        .tmpl-main:hover tmpl-edit {
+            display: block;
+        }
+
+        .half {
+            width: 48%;
+            margin-right: 1%;
+            display: inline-block;
+            vertical-align: top;
+        }
+
+        select {
+            outline: none;
+            border: 0;
+            border-bottom: 2px solid #d0d0d0;
+            width: 10em;
+            transition: border 250ms ease-out;
+        }
+
+            select:focus {
+                border-bottom: 2px solid rgba(128, 128, 224, 128);
+            }
+
+        .card {
+            box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
+            background-color: white;
+            border-radius: 2px;
+            flex: 1;
+            padding: 0.7em 1em 0.3em 1em;
+            margin-bottom: 2em;
+        }
+
+        h2 {
+            font-family: Roboto, 'Segoe UI', Tahoma, sans-serif;
+            color: white;
+            background-color: rgb(51, 103, 214);
+            margin: 0;
+            padding: 0.4em 2em;
+        }
+
+        body {
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+
+        .status {
+            background-color: #d0f0d0;
+            padding: 0.4em 1em 0.4em 3em;
+        }
+
+        button {
+            margin-right: 1em;
+        }
+
+        input:focus:required:invalid {
+            background-color: #ffe0e0;
+        }
+
+        input {
+            transition: background-color 400ms ease;
+        }
+
+        input:required:valid {
+            background-color: white;
+            color: black;
+        }
+
+        div.card-view:hover #btnEdit {
+            display: block;
+        }
+
+        div.card-view #btnEdit {
+            display: none;
+        }
+
+        .source-view:hover .source {
+            max-height: 16em;
+            overflow: auto;
+        }
+
+        .source-view .source {
+            max-height: 5.2em;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+
+    <div style="position: fixed; top: 0; width: 100%; background: #f0f0f0; z-index: 100; ">
+        <h2>Custom Actions</h2>
+        <br />
+
+        <div style="position: absolute; right: 1em;">
+            <button data-bind="click: save">Save</button>
+            <button data-bind="click: add">Add new</button>
+            <button data-bind="click: demo">Demo Config</button>
+        </div>
+
+        <p style="margin-left: 2em;">Enter default JS and/or action JS (executed on-demand by key short-cut or from popup) </p>
+
+        <div data-bind="text: status, visible: status" class="status"></div>
+    </div>
+
+    <div style="margin: 8em 2em 0 2em; font-size: 13px;">
+
+        <div style="position: relative; margin: 0;">
+            <div data-bind="foreach: items()" class="cn-tmpl">
+
+                <div class="card">
+                    <div class="card-view" data-bind="ifnot: editMode, event: { dblclick: $root.edit }">
+                        <button id="btnEdit" style="position: absolute; right: 1em;" data-bind="click: $root.edit">Edit</button>
+                        <div>
+                            Name: <span data-bind="text: name" class="inp-name"></span>
+                        </div>
+                        <div>
+                            URL: <span data-bind="text: url"></span>
+                        </div>
+                        <div>
+                            Execute: <span data-bind="text: execute"></span>
+                        </div>
+                        <div>
+                            Output: <span data-bind="text: output"></span>
+                        </div>
+                        
+                        <div class="source-view">
+                            <div class="half">
+                                <div>
+                                    Source: <span data-bind="text: sourceType"></span>
+                                </div>
+                                <pre class="source" data-bind="text: source"></pre>
+                            </div>
+
+                            <div class="half">
+                                <div>
+                                    Data: <span data-bind="text: dataType"></span>
+                                </div>
+                                <pre class="source" data-bind="text: data"></pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-edit" data-bind="if: editMode">
+                        <button style="position: absolute; right: 1em;" data-bind="click: $root.delete">Delete</button>
+                        <div>
+                            Name: <input type="text" data-bind="value: name" class="inp-name" required />
+                        </div>
+                        <div>
+                            URL: &nbsp;&nbsp;<input type="text" class="inp-url" data-bind="value: url" required />
+                        </div>
+                        <div>
+                            Execute: &nbsp;&nbsp;<select data-bind="options: $root.executeOptions, value: execute"></select>
+                        </div>
+                        <div>
+                            Output: &nbsp;&nbsp;&nbsp;<select data-bind="options: $root.outputOptions, value: output"></select>
+                        </div>
+
+                        <div class="half">
+                            <div>
+                                Source: &nbsp;&nbsp;&nbsp;<select data-bind="options: $root.templates, value: sourceType, optionsValue: 'sourceType', optionsText: 'name'"></select>
+                            </div>
+                            <div data-bind="if: sourceType() == 'JS'">
+                                <textarea data-bind="value: source"></textarea>
+                            </div>
+                            <div data-bind="ifnot: sourceType() == 'JS'">
+                                <div data-bind="click: $root.toggleSource" style="cursor: pointer;">[show source code]</div>
+                                <pre data-bind="text: getTemplateSource" style="display: none;"></pre>
+                            </div>
+                        </div>
+
+                        <div class="half">
+                            <div>
+                                Data: <select data-bind="options: $root.dataTypes, value: dataType"></select>
+                            </div>
+                            <div data-bind="if: dataType() != 'None'">
+                                <textarea data-bind="value: data"></textarea>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="knockout-3.4.1.js"></script>
+    <script src="knockout.mapping-latest.js"></script>
+    <script src="options.js"></script>
+</body>
+</html>

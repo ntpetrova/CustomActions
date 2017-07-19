@@ -1,0 +1,40 @@
+<!doctype html>
+<html>
+<head>
+    <title>Custom Actions</title>
+    <style>
+        body {
+            overflow: hidden;
+            margin: 0px;
+            padding: 0px;
+            background: white;
+        }
+
+        #mainContainer {
+            width: 12em;
+            padding-left: 1em;
+        }
+
+        div.mainMenu, #actions div:hover {
+            cursor: pointer;
+            text-align: left;
+            padding: 1px 3px;
+            margin-right: 0.4em;
+        }
+
+            div.mainMenu:hover, #actions div:hover {
+                background: #aaaaaa;
+            }
+    </style>
+    <script src="popup.js"></script>
+</head>
+<body>
+    <div id="mainContainer">
+        <div id="actions">
+        </div>
+        <hr id="prefHr" />
+        <div id="preferences" class="mainMenu">Preferences</div>
+        <div id="addThisSite" class="mainMenu">Add this site</div>
+    </div>
+</body>
+</html>
