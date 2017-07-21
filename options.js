@@ -118,8 +118,8 @@
                     chld.style.overflow = 'hidden';
 
                     el.addEventListener('mouseover', function () {
-                        chld.style.maxHeight = "inherit"; chl
-                        d.querySelectorAll('img').forEach(function (img) {
+                        chld.style.maxHeight = "inherit"; 
+                        chld.querySelectorAll('img').forEach(function (img) {
                             img.style.display = 'block';
                         });
                     }, false);
