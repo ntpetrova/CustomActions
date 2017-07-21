@@ -118,8 +118,8 @@
                     chld.style.overflow = 'hidden';
 
                     el.addEventListener('mouseover', function () {
-                        chld.style.maxHeight = "inherit"; 
-			            chld.querySelectorAll('img').forEach(function (img) {
+                        chld.style.maxHeight = "inherit"; chl
+                        d.querySelectorAll('img').forEach(function (img) {
                             img.style.display = 'block';
                         });
                     }, false);
@@ -411,6 +411,22 @@
             });
         };
 
+        function addItems(items)
+        {
+            self.items.removeAll();
+
+            items.forEach(function (item) {
+                item.editMode = false;
+                var koItem = ko.mapping.fromJSON(JSON.stringify(item));
+
+                    koItem.getTemplateSource = ko.computed(function () {
+                        return stripFunctionBody(getTemplate(this.sourceType()));
+                    }, koItem);
+
+                    self.items.push(koItem);
+             });
+        }
+
         self.delete = function (data) {
             if (confirm('Are you sure you want to delete the action?'))
                 self.items.remove(data);
@@ -426,7 +442,7 @@
         };
 
         self.demo = function (data) {
-            self.items(ko.mapping.fromJSON(JSON.stringify(demoItems)));
+            addItems(demoItems);
         };
 
         self.toggleSource = function (data, event) {
@@ -437,18 +453,7 @@
         chrome.storage.local.get('actions', function (items) {
             if (items && items.actions && items.actions.length > 0) {
 
-                self.items.removeAll();
-
-                items.actions.forEach(function (item) {
-                    item.editMode = false;
-                    var koItem = ko.mapping.fromJSON(JSON.stringify(item));
-
-                    koItem.getTemplateSource = ko.computed(function () {
-                        return stripFunctionBody(getTemplate(this.sourceType()));
-                    }, koItem);
-
-                    self.items.push(koItem);
-                })
+                addItems(items.actions);
 
                 if (window.location.search.indexOf("?url=") == 0) {
                     var match = decodeURIComponent(window.location.search).match(/^\?url=https?:\/\/([^\/]+)\//i);
